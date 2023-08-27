@@ -24,7 +24,7 @@ class DictService implements Dict
 
         if ($dictLength >= 3) {
             //远程表字典查询
-            $prefix = config('database')['prefix'];
+            $prefix = config('database')['default']['prefix'];
             $table = explode('->', $dict[0]);
 
             try {

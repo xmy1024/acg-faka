@@ -9,7 +9,7 @@ require("Helper.php");
 //初始化数据库
 $capsule = new \Illuminate\Database\Capsule\Manager();
 // 创建链接
-$capsule->addConnection(config('database'));
+$capsule->addConnection(config('database')['default']);
 // 设置全局静态可访问
 $capsule->setAsGlobal();
 // 启动Eloquent

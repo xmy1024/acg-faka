@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller\Admin\Api;
@@ -6,13 +7,13 @@ namespace App\Controller\Admin\Api;
 
 use App\Controller\Base\API\Manage;
 use App\Entity\CreateObjectEntity;
-use App\Entity\DeleteBatchEntity;
 use App\Entity\QueryTemplateEntity;
 use App\Interceptor\ManageSession;
+use App\Model\Card;
+use App\Model\CCOrder;
 use App\Model\ManageLog;
 use App\Service\Query;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Arr;
 use Kernel\Annotation\Inject;
 use Kernel\Annotation\Interceptor;
 use Kernel\Exception\JSONException;
@@ -104,5 +105,23 @@ class Order extends Manage
 
         ManageLog::log($this->getManage(), "进行了一键清理无用商品订单操作");
         return $this->json(200, '（＾∀＾）清理完成');
+    }
+
+    public function confirm()
+    {
+        $id = $_POST['id'];
+        $order = \App\Model\Order::query()->where('confirm', 2)->find($id);
+        if (empty($order)) {
+            return $this->json(200, '确认失败，订单不存在');
+        }
+        // $order->confirm = 1;
+        // $order->save();
+
+        Card::where('order_id', $id)->where('status', 1)->chunk(100, function ($list) {
+            $ccOrderIds = array_column($list->toArray(), 'third_order_id');
+            CCOrder::whereIn('cc_order_id', $ccOrderIds)
+                ->where('status', 10)
+                ->update(['status' => 30]);
+        });
     }
 }

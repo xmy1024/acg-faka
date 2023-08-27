@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller\Admin\Api;
@@ -9,6 +10,7 @@ use App\Entity\CreateObjectEntity;
 use App\Entity\DeleteBatchEntity;
 use App\Entity\QueryTemplateEntity;
 use App\Interceptor\ManageSession;
+use App\Model\CCOrder;
 use App\Model\ManageLog;
 use App\Service\Query;
 use App\Util\Client;
@@ -209,5 +211,16 @@ class Commodity extends Manage
 
         ManageLog::log($this->getManage(), "[批量更新]商品状态");
         return $this->json(200, '更新成功');
+    }
+
+    public function sync()
+    {
+        $commodity = \App\Model\Commodity::where('item_id', '!=', 0)->find($_POST['id']);
+        if (empty($commodity)) {
+            return $this->json(500, "同步失败,商品不存在");
+        }
+        $cc = new CCOrder();
+        $cc->syncOrder($commodity);
+        return $this->json(200, "同步成功");
     }
 }

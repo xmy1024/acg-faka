@@ -1,0 +1,7 @@
+runtime
+vender
+.history
+.idea
+assets/cache
+vendor/composer
+runtime.log

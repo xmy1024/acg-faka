@@ -452,6 +452,23 @@
                                 });
                             }
                         }
+                    },
+                    {
+                        field: 'confirm', title: '操作', formatter: function (val, item) {
+                            if (item.confirm == 2) {
+                                return '<span class="badge badge-light-success confirm" style="cursor: pointer;" >一键通过</span>';
+                            }
+
+                        }
+                        ,
+                        events: {
+                            'click .confirm': function (event, value, row, index) {
+                                $.post('/admin/api/order/confirm', {id: row.id, status: 1}, res => {
+                                    layer.msg(res.msg);
+                                    table.bootstrapTable('refresh', {silent: true});
+                                });
+                            }
+                        }
                     }
                     , {
                         field: 'widget', title: '控件', formatter: function (val, item) {
@@ -487,7 +504,7 @@
                                 });
                             }
                         }
-                    },
+                    }
                     <!--start::HOOK-->
                     #{hook(\App\Consts\Hook::ADMIN_VIEW_ORDER_TABLE)}
                     <!--end::HOOK-->

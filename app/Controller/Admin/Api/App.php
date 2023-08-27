@@ -1,10 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller\Admin\Api;
 
 use App\Interceptor\ManageSession;
 use App\Interceptor\Waf;
+use App\Model\CCOrder;
+use App\Model\Commodity;
 use App\Model\ManageLog;
 use App\Util\Helper;
 use App\Util\Opcache;
@@ -34,7 +37,7 @@ class App extends Manage
         $versions = $this->app->getVersions();
         $latestVersion = $versions[0]['version'];
         $local = config("app")['version'];
-        $latest = $latestVersion == $local;
+        $latest = $local;
         return $this->json(200, 'ok', ["local" => $local, "latest" => $latest, "version" => $latestVersion]);
     }
 
@@ -52,7 +55,7 @@ class App extends Manage
      */
     public function ad(): array
     {
-        return $this->json(200, "ok", $this->app->ad());
+        // return $this->json(200, "ok", $this->app->ad());
     }
 
 
